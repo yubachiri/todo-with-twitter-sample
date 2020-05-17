@@ -22,7 +22,10 @@ export default function App() {
     const fetch = async () => {
       const items: Todo[] = []
 
-      const snapshot = await db.collection("tweets").get()
+      const snapshot = await db
+        .collection("tweets")
+        .where("done", "==", false)
+        .get()
       snapshot.forEach((doc) => {
         const {content, done} = doc.data()
         const todo = {
