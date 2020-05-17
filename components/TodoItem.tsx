@@ -1,11 +1,14 @@
 import React from 'react'
 import {StyleSheet, Switch, Text, View} from 'react-native';
+import {Todo} from '../App'
 
 interface Props {
+  todo: Todo
   text: string
+  completeTodo: (todo: Todo) => void
 }
 
-const TodoItem: React.FC<Props> = ({ text }) => {
+const TodoItem: React.FC<Props> = ({ todo, text, completeTodo }) => {
   const [isEnabled, setIsEnabled] = React.useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -15,7 +18,13 @@ const TodoItem: React.FC<Props> = ({ text }) => {
         trackColor={{ false: "#767577", true: "#81b0ff" }}
         thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
         ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleSwitch}
+        onValueChange={(value) => {
+          console.log(value)
+          toggleSwitch()
+          if(value) {
+            completeTodo(todo)
+          }
+        }}
         value={isEnabled}
         style={styles.switch}
       />
