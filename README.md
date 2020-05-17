@@ -1,5 +1,5 @@
 # todo-with-twitter-sample
-Firestoreからデータを取得してTODO管理できるアプリ。
+Firestoreからデータを取得してTODO管理できるアプリ。FirestoreへのTODO登録は[この記事に書いたようにZapierから行う](https://tech.mof-mof.co.jp/blog/zapier-with-firebase-and-twitter)。
 
 Firestoreのデータはこんなイメージ
 
