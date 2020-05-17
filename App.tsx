@@ -8,17 +8,29 @@ import TodoItem from './components/TodoItem'
 
 import firebaseApp from './functions/firebaseConfig'
 
+interface Todo {
+  id: string
+  content: string
+  done: boolean
+}
+
 export default function App() {
-  const [result, setResult] = React.useState<string[]>([]);
+  const [result, setResult] = React.useState<Todo[]>([]);
 
   useEffect(() => {
     const db = firebaseApp.firestore();
     const fetch = async () => {
-      const items: string[] = []
+      const items: Todo[] = []
 
       const snapshot = await db.collection("tweets").get()
       snapshot.forEach((doc) => {
-        items.push(doc.get("content") || "contentが取得できませんでした")
+        const {content, done} = doc.data()
+        const todo = {
+          id: doc.id,
+          content: content || "contentが取得できませんでした",
+          done: done || false
+        }
+        items.push(todo)
       })
 
       setResult(items)
@@ -31,8 +43,8 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={result}
-        renderItem={({item}) => <TodoItem text={item}/>}
-        keyExtractor={item => item}
+        renderItem={({item}) => <TodoItem text={item.content + ": " + item.done}/>}
+        keyExtractor={item => item.id}
       />
     </SafeAreaView>
   );

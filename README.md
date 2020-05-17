@@ -1,6 +1,5 @@
 # todo-with-twitter-sample
-Firestoreからデータを取得してリスト表示するアプリ。
-TODO管理ができるようにしようかなって思ってるところ。
+Firestoreからデータを取得してTODO管理できるアプリ。
 
 Firestoreのデータはこんなイメージ
 
@@ -8,7 +7,8 @@ Firestoreのデータはこんなイメージ
 {
   tweets: {
     docId: {
-      content: string
+      content: string,
+      done: boolean
     }
   }
 }
