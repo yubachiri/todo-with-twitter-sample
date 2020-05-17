@@ -5,11 +5,11 @@ import {Todo} from '../App'
 interface Props {
   todo: Todo
   text: string
-  completeTodo: (todo: Todo) => void
+  handleTodoStatus: (todo: Todo, value: boolean) => void
 }
 
-const TodoItem: React.FC<Props> = ({ todo, text, completeTodo }) => {
-  const [isEnabled, setIsEnabled] = React.useState(false);
+const TodoItem: React.FC<Props> = ({ todo, text, handleTodoStatus }) => {
+  const [isEnabled, setIsEnabled] = React.useState(todo.done);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   return (
@@ -19,11 +19,8 @@ const TodoItem: React.FC<Props> = ({ todo, text, completeTodo }) => {
         thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
         ios_backgroundColor="#3e3e3e"
         onValueChange={(value) => {
-          console.log(value)
           toggleSwitch()
-          if(value) {
-            completeTodo(todo)
-          }
+          handleTodoStatus(todo, value)
         }}
         value={isEnabled}
         style={styles.switch}

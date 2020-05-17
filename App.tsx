@@ -17,26 +17,45 @@ export interface Todo {
 
 export default function App() {
   const [todo, setTodo] = React.useState<Todo[]>([]);
+  const [completed, setCompleted] = React.useState<Todo[]>([]);
   const db = firebaseApp.firestore();
 
   const fetchTodo = async () => {
-    const items: Todo[] = []
+    const todos: Todo[] = []
+    const completeds: Todo[] = []
 
-    const snapshot = await db.collection("tweets")
+    const todoSnapshot = await db.collection("tweets")
       .where("done", "==", false)
       .get()
 
-    snapshot.forEach((doc) => {
+    todoSnapshot.forEach((doc) => {
       const {content, done} = doc.data()
       const todo = {
         id: doc.id,
         content: content || "contentが取得できませんでした",
         done: done || false
       }
-      items.push(todo)
+      todos.push(todo)
     })
 
-    setTodo(items)
+    setTodo(todos)
+
+    // FIXME: サボってコピペした 共通化したい
+    const completedSnapshot = await db.collection("tweets")
+      .where("done", "==", true)
+      .get()
+
+    completedSnapshot.forEach((doc) => {
+      const {content, done} = doc.data()
+      const todo = {
+        id: doc.id,
+        content: content || "contentが取得できませんでした",
+        done: done || true
+      }
+      completeds.push(todo)
+    })
+
+    setCompleted(completeds)
   }
 
   const handleDone = (todo: Todo, status: boolean) => {
@@ -56,6 +75,8 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <Button title={"refetch"} onPress={fetchTodo}/>
+
+      {/*未完のTODO*/}
       <FlatList
         data={todo}
         renderItem={({item}) => {
@@ -63,8 +84,26 @@ export default function App() {
             <TodoItem
               todo={item}
               text={item.content}
-              completeTodo={(todo) => {
-                handleDone(todo, true)
+              handleTodoStatus={(todo, value) => {
+                handleDone(todo, value)
+                fetchTodo()
+              }}
+            />
+          )
+        }}
+        keyExtractor={item => item.id}
+      />
+
+      {/*完了済みのTODO*/}
+      <FlatList
+        data={completed}
+        renderItem={({item}) => {
+          return (
+            <TodoItem
+              todo={item}
+              text={item.content}
+              handleTodoStatus={(todo, value) => {
+                handleDone(todo, value)
                 fetchTodo()
               }}
             />
